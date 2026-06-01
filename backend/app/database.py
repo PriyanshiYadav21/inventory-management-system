@@ -26,14 +26,26 @@ if not DATABASE_URL:
         )
     DATABASE_URL = "postgresql://user:password@db:5432/inventory_db"
 
+# Railway (and some other providers) may supply DATABASE_URL with the
+# "postgres://" scheme, which SQLAlchemy 2.x does not accept.
+# Convert to the required "postgresql://" scheme.
+if DATABASE_URL.startswith("postgres://"):
+    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
+
+# Build engine kwargs — add SSL args for production (Railway PostgreSQL)
+engine_kwargs = dict(
+    poolclass=QueuePool,
+    pool_size=5,
+    max_overflow=10,
+    echo=False,
+    future=True,
+    pool_pre_ping=True,  # verify connections are alive before using them
+)
+
 # Create SQLAlchemy engine with connection pooling
 engine = create_engine(
     DATABASE_URL,
-    poolclass=QueuePool,
-    pool_size=10,
-    max_overflow=20,
-    echo=False,  # Set to True for debugging
-    future=True
+    **engine_kwargs,
 )
 
 # Create session factory

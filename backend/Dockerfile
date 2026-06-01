@@ -26,9 +26,10 @@ ENV PYTHONUNBUFFERED=1 \
 # Create non-root user for security
 RUN useradd -m -u 1000 appuser
 
-# Install runtime dependencies
+# Install runtime dependencies (curl for health check)
 RUN apt-get update && apt-get install -y --no-install-recommends \
     postgresql-client \
+    curl \
     && rm -rf /var/lib/apt/lists/*
 
 # Set working directory
@@ -43,12 +44,12 @@ COPY --chown=appuser:appuser . .
 # Switch to non-root user
 USER appuser
 
-# Health check
-HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-    CMD python -c "import requests; requests.get('http://localhost:8000/health')" || exit 1
+# Health check using curl (works with dynamic PORT)
+HEALTHCHECK --interval=30s --timeout=10s --start-period=10s --retries=3 \
+    CMD curl -f http://localhost:${PORT:-8000}/health || exit 1
 
-# Expose port
-EXPOSE 8000
+# Expose port (documentation only, Railway uses $PORT)
+EXPOSE ${PORT:-8000}
 
-# Run application
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+# Run application — Railway injects $PORT, so we must use shell form
+CMD sh -c "uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}"
