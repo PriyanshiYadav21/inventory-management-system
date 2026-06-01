@@ -55,7 +55,8 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://localhost:5173",
-        "https://graceful-abundance-production-9b3e.up.railway.app"
+        "https://graceful-abundance-production-9b3e.up.railway.app",
+        "https://inventory-management-system-production-760b.up.railway.app"
     ],
     allow_credentials=True,
     allow_methods=["*"],
