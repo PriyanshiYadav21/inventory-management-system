@@ -14,7 +14,7 @@ For frontend deployment on Vercel, use:
 Environment variables:
 
 ```
-VITE_API_URL=https://your-api-domain.com
+VITE_API_URL=https://inventory-management-system-production-760b.up.railway.app
 ```
 
 ## Render (Backend)

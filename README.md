@@ -299,7 +299,7 @@ docker-compose build --no-cache backend
 ### Base URL
 
 - Local: `http://localhost:8000`
-- Production: `https://your-api-domain.com`
+- Production: `https://inventory-management-system-production-760b.up.railway.app`
 
 ### Authentication
 
@@ -527,7 +527,7 @@ CREATE TABLE order_items (
    - Select the `frontend` directory
 
 3. **Environment Variables**
-   - Add environment variable: `VITE_API_URL=https://your-api-domain.com`
+   - Add environment variable: `VITE_API_URL=https://inventory-management-system-production-760b.up.railway.app`
 
 4. **Deploy**
    - Vercel automatically deploys on push
