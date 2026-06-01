@@ -52,16 +52,23 @@ app = FastAPI(
 )
 
 # CORS Configuration
-# Allow frontend requests from deployed hosts. In production, set FRONTEND_URL or CORS_ALLOW_ALL.
+# Allow frontend requests from deployed hosts. In production, set FRONTEND_URL, CORS_ORIGINS, or CORS_ALLOW_ALL.
 allowed_origins = ["http://localhost:5173"]
+
 frontend_origins = os.getenv("FRONTEND_URL")
 if frontend_origins:
     allowed_origins.extend([origin.strip() for origin in frontend_origins.split(",") if origin.strip()])
+
+cors_origins = os.getenv("CORS_ORIGINS")
+if cors_origins:
+    allowed_origins.extend([origin.strip() for origin in cors_origins.split(",") if origin.strip()])
+
 # Known deployed frontend domains
 allowed_origins.extend([
     "https://graceful-abundance-production-9b3e.up.railway.app",
     "https://inventory-management-system-production-760b.up.railway.app"
 ])
+
 if os.getenv("CORS_ALLOW_ALL", "false").lower() == "true":
     allowed_origins = ["*"]
 

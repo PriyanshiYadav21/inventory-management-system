@@ -15,10 +15,16 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv(BASE_DIR / ".env")
 
 # Get database URL from environment variables
-DATABASE_URL = os.getenv(
-    "DATABASE_URL",
-    "postgresql://user:password@db:5432/inventory_db"
-)
+DATABASE_URL = os.getenv("DATABASE_URL")
+ENVIRONMENT = os.getenv("ENVIRONMENT", "development")
+
+if not DATABASE_URL:
+    if ENVIRONMENT == "production":
+        raise RuntimeError(
+            "DATABASE_URL must be set in production. "
+            "Configure a valid database connection string in your production environment."
+        )
+    DATABASE_URL = "postgresql://user:password@db:5432/inventory_db"
 
 # Create SQLAlchemy engine with connection pooling
 engine = create_engine(
