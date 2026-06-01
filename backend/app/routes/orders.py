@@ -121,28 +121,6 @@ def get_orders(
     orders = db.query(Order).offset(skip).limit(limit).all()
     return orders
 
-
-@router.get("/{order_id}", response_model=OrderDetailResponse)
-def get_order(
-    order_id: int,
-    db: Session = Depends(get_db)
-):
-    """
-    Retrieve a specific order by ID with full details.
-    Includes customer information and all order items.
-    
-    Raises:
-        HTTPException: If order not found
-    """
-    order = db.query(Order).filter(Order.id == order_id).first()
-    if not order:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Order not found"
-        )
-    return order
-
-
 @router.get("/stats/dashboard", response_model=DashboardStats)
 def get_dashboard_stats(db: Session = Depends(get_db)):
     """
@@ -165,3 +143,23 @@ def get_dashboard_stats(db: Session = Depends(get_db)):
         total_orders=total_orders,
         total_revenue=total_revenue
     )
+
+@router.get("/{order_id}", response_model=OrderDetailResponse)
+def get_order(
+    order_id: int,
+    db: Session = Depends(get_db)
+):
+    """
+    Retrieve a specific order by ID with full details.
+    Includes customer information and all order items.
+    
+    Raises:
+        HTTPException: If order not found
+    """
+    order = db.query(Order).filter(Order.id == order_id).first()
+    if not order:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Order not found"
+        )
+    return order
